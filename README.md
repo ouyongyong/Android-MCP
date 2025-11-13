@@ -108,9 +108,9 @@ For troubleshooting tips (log locations, common ADB issues), see the [MCP docs](
 
 ## 🛠️ Available Tools
 
-Claude can access the following tools to interact with Windows:
+Claude can access the following tools to interact with Android:
 
-- `State-Tool`: To understand the state of the device.
+- `State-Tool`: To understand the state of the device. **NEW**: Now supports `max_elements` parameter (default: 50, max: 200) to limit output size and prevent timeouts.
 - `Click-Tool`: Click on the screen at the given coordinates.
 - `Long-Click-Tool`: Perform long click on the screen at the given coordinates.
 - `Type-Tool`: Type text on the specified coordinates (optionally clears existing text).
@@ -118,9 +118,18 @@ Claude can access the following tools to interact with Windows:
 - `Drag-Tool`: Drag from one point to another.
 - `Press-Tool`: To press the keys on the mobile device (Back, Volume Up, ...etc).
 - `Wait-Tool`: Pause for a defined duration.
-- `State-Tool`: Combined snapshot of active apps and interactive UI elements.
 - `Notification-Tool`: To access the notifications seen on the device.
-- `Shell-Tool`: To execute shell commands on the android device.
+- `Restart-Tool`: **NEW**: Restart the device connection when it becomes unresponsive or after timeout errors.
+
+### 🆕 New Features (v1.1.0)
+
+- **Restart-Tool**: Automatically reconnect to the device when experiencing timeouts or connection issues
+- **max_elements parameter**: Control the number of UI elements returned by State-Tool to prevent oversized responses
+  - Default: 50 elements
+  - Maximum: 200 elements
+  - Usage: `State-Tool(use_vision=True, max_elements=20)`
+
+For detailed usage examples and troubleshooting, see [USAGE_GUIDE.md](USAGE_GUIDE.md).
 
 ## ⚠️ Caution
 

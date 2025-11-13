@@ -15,19 +15,27 @@ class Tree:
         self.mobile = mobile
 
     def get_element_tree(self)->'Element':
-        tree_string = self.mobile.device.dump_hierarchy()
-        print(tree_string)
-        return ElementTree.fromstring(tree_string)
+        try:
+            # Add timeout to prevent hanging
+            tree_string = self.mobile.device.dump_hierarchy(compressed=False, pretty=False)
+            if not tree_string:
+                raise ValueError("dump_hierarchy returned empty string")
+            return ElementTree.fromstring(tree_string)
+        except Exception as e:
+            raise RuntimeError(f"Failed to get element tree from device: {str(e)}")
     
-    def get_state(self)->TreeState:
-        interactive_elements=self.get_interactive_elements()
+    def get_state(self, max_elements=50)->TreeState:
+        interactive_elements=self.get_interactive_elements(max_elements=max_elements)
         return TreeState(interactive_elements=interactive_elements)
     
-    def get_interactive_elements(self)->list:
+    def get_interactive_elements(self, max_elements=50)->list:
         interactive_elements=[]
         element_tree = self.get_element_tree()
         nodes=element_tree.findall('.//node[@visible-to-user="true"][@enabled="true"]')
         for node in nodes:
+            # Stop if we've reached the maximum number of elements
+            if len(interactive_elements) >= max_elements:
+                break
             if self.is_interactive(node):
                 x1,y1,x2,y2 = extract_cordinates(node)
                 name=self.get_element_name(node)
